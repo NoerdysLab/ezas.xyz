@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fat Cat Naming Society</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🐱%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="title-wrap">
+      <h1>The Fat Cat Naming Society</h1>
+      <p class="tagline">A democratic institution for the discerning round feline.</p>
+    </div>
+    <div class="header-actions">
+      <button id="generateBtn" class="btn btn-primary">＋ Generate a New Cat</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="cats-section">
+      <h2>The Council</h2>
+      <div id="catGrid" class="cat-grid"></div>
+    </section>
+
+    <aside class="leaderboard">
+      <h2>Name Leaderboard</h2>
+      <ol id="leaderboardList" class="leaderboard-list"></ol>
+      <p class="leaderboard-note">Top names across all cats, by votes.</p>
+    </aside>
+  </main>
+
+  <div id="catModal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel" role="dialog" aria-modal="true">
+      <button class="modal-close" data-close aria-label="Close">×</button>
+      <div class="modal-grid">
+        <div class="modal-portrait">
+          <div id="modalCatSvg" class="portrait"></div>
+          <div class="portrait-meta">
+            <div class="meta-row"><span>Personality</span><strong id="modalPersonality"></strong></div>
+            <div class="meta-row"><span>Mood</span><strong id="modalMood"></strong></div>
+            <div class="meta-row"><span>Weight class</span><strong id="modalWeight"></strong></div>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <h2 id="modalTitle" class="modal-title"></h2>
+          <p id="modalBio" class="modal-bio"></p>
+
+          <div class="section">
+            <h3>Names &amp; Votes</h3>
+            <ul id="modalNameList" class="name-list"></ul>
+            <form id="newNameForm" class="new-name-form">
+              <input id="newNameInput" type="text" maxlength="48" placeholder="Suggest a better name…" required />
+              <button class="btn btn-secondary" type="submit">Submit</button>
+            </form>
+          </div>
+
+          <div class="section">
+            <h3>Interactions</h3>
+            <p class="hint">Tap to overhear what this cat says when they bump into a colleague.</p>
+            <button id="interactBtn" class="btn btn-secondary">Eavesdrop on a chat</button>
+            <div id="dialogue" class="dialogue"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <span>Built with rounded edges and questionable taste.</span>
+    <button id="resetBtn" class="link-btn" title="Reset all cats and votes">Reset everything</button>
+  </footer>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>

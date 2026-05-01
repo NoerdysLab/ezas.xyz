@@ -1,30 +1,47 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
   <title>Fat Cat Naming Society</title>
+  <meta property="og:title" content="The Fat Cat Naming Society" />
+  <meta property="og:description" content="A democratic institution for the discerning round feline." />
+  <meta name="description" content="Vote on names for procedurally generated fat cats. A democratic institution for the discerning round feline." />
   <link rel="stylesheet" href="styles.css" />
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🐱%3C/text%3E%3C/svg%3E" />
 </head>
 <body>
+  <a href="#catGrid" class="skip-link">Skip to cats</a>
+
   <header class="site-header">
     <div class="title-wrap">
       <h1>The Fat Cat Naming Society</h1>
       <p class="tagline">A democratic institution for the discerning round feline.</p>
     </div>
     <div class="header-actions">
+      <button id="themeBtn" class="icon-btn" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+      <button id="soundBtn" class="icon-btn" aria-label="Toggle sound" aria-pressed="false" title="Toggle sound">🔇</button>
+      <button id="tournamentBtn" class="btn btn-secondary" title="Head-to-head name voting">⚔️ Tournament</button>
       <button id="generateBtn" class="btn btn-primary">＋ Generate a New Cat</button>
     </div>
   </header>
 
+  <section id="cotd" class="cotd" aria-live="polite"></section>
+
   <main class="layout">
     <section class="cats-section">
-      <h2>The Council</h2>
-      <div id="catGrid" class="cat-grid"></div>
+      <div class="filters">
+        <input id="searchInput" type="search" placeholder="Search cats by name…" aria-label="Search cats" />
+        <select id="personalityFilter" aria-label="Filter by personality">
+          <option value="">All personalities</option>
+        </select>
+        <span class="count" id="catCount" aria-live="polite"></span>
+      </div>
+      <div id="catGrid" class="cat-grid" role="list"></div>
     </section>
 
-    <aside class="leaderboard">
+    <aside class="leaderboard" aria-label="Name leaderboard">
       <h2>Name Leaderboard</h2>
       <ol id="leaderboardList" class="leaderboard-list"></ol>
       <p class="leaderboard-note">Top names across all cats, by votes.</p>
@@ -33,15 +50,16 @@
 
   <div id="catModal" class="modal" aria-hidden="true">
     <div class="modal-backdrop" data-close></div>
-    <div class="modal-panel" role="dialog" aria-modal="true">
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
       <button class="modal-close" data-close aria-label="Close">×</button>
       <div class="modal-grid">
         <div class="modal-portrait">
-          <div id="modalCatSvg" class="portrait"></div>
+          <div id="modalCatSvg" class="portrait portrait-animated" role="img" aria-label="Cat portrait"></div>
           <div class="portrait-meta">
             <div class="meta-row"><span>Personality</span><strong id="modalPersonality"></strong></div>
             <div class="meta-row"><span>Mood</span><strong id="modalMood"></strong></div>
-            <div class="meta-row"><span>Weight class</span><strong id="modalWeight"></strong></div>
+            <div class="meta-row"><span>Build</span><strong id="modalWeight"></strong></div>
+            <div class="meta-row"><span>Permalink</span><a id="modalLink" class="permalink" href="#">copy</a></div>
           </div>
         </div>
 
@@ -50,28 +68,46 @@
           <p id="modalBio" class="modal-bio"></p>
 
           <div class="section">
-            <h3>Names &amp; Votes</h3>
+            <h3>Names &amp; votes</h3>
             <ul id="modalNameList" class="name-list"></ul>
             <form id="newNameForm" class="new-name-form">
-              <input id="newNameInput" type="text" maxlength="48" placeholder="Suggest a better name…" required />
+              <input id="newNameInput" type="text" maxlength="48" placeholder="Suggest a better name…" required aria-label="Suggest a name" />
               <button class="btn btn-secondary" type="submit">Submit</button>
             </form>
+            <p id="newNameError" class="form-error" role="alert"></p>
           </div>
 
           <div class="section">
             <h3>Interactions</h3>
-            <p class="hint">Tap to overhear what this cat says when they bump into a colleague.</p>
-            <button id="interactBtn" class="btn btn-secondary">Eavesdrop on a chat</button>
-            <div id="dialogue" class="dialogue"></div>
+            <p class="hint">Eavesdrop on this cat bumping into a colleague.</p>
+            <div class="interact-row">
+              <button id="interactBtn" class="btn btn-secondary">Run an interaction</button>
+              <span id="affinityBadge" class="affinity-badge" hidden></span>
+            </div>
+            <div id="dialogue" class="dialogue" aria-live="polite"></div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
+  <div id="tournamentModal" class="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-tourney></div>
+    <div class="modal-panel modal-panel-narrow" role="dialog" aria-modal="true" aria-labelledby="tournamentTitle">
+      <button class="modal-close" data-close-tourney aria-label="Close">×</button>
+      <h2 id="tournamentTitle">Head-to-head</h2>
+      <p class="hint">Whose name deserves it more? Pick a side.</p>
+      <div class="bracket" id="bracket"></div>
+      <div class="bracket-stats" id="bracketStats"></div>
+    </div>
+  </div>
+
   <footer class="site-footer">
     <span>Built with rounded edges and questionable taste.</span>
-    <button id="resetBtn" class="link-btn" title="Reset all cats and votes">Reset everything</button>
+    <span class="footer-actions">
+      <span id="syncStatus" class="sync-status" title="Sync status"></span>
+      <button id="resetBtn" class="link-btn" title="Reset all cats and votes">Reset everything</button>
+    </span>
   </footer>
 
   <script src="app.js" type="module"></script>
